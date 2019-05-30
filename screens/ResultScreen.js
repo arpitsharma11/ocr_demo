@@ -10,6 +10,10 @@ class ResultScreen extends Component{
         title: 'Verify',
         headerTitleStyle: {
             fontFamily: 'Roboto',
+            color: '#484A54',	
+            fontSize: 18,
+                fontWeight: 'bold',
+                	lineHeight: 25
         }
     }
 
@@ -59,7 +63,7 @@ class ResultScreen extends Component{
         const { amount, provider_name, provider_address,guarantor_number,guarantor_name } = this.state;
 
         return(
-            <View>
+            <View style={{paddingLeft:10}}>
                 <Text style={styles.heading}>Provider Information</Text>
                 <CustomInput
                     value={amount}
@@ -96,7 +100,10 @@ const styles = StyleSheet.create({
     heading: {
         paddingTop: '8%',
         paddingLeft : '4%',
-        fontSize: 18
+        paddingBottom:17,
+        fontSize: 18,
+        fontWeight:'bold'
+
     }
 });
 

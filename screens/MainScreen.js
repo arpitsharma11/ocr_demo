@@ -132,6 +132,17 @@ export default class MainScreen extends Component {
         }
     }
 
+    _test = () => {
+        const { navigate } = this.props.navigation;
+        navigate('Result',{
+            amount: '10',
+            provider_name: '20',
+            provider_address: '300',
+            guarantor_number: 'asdasdad',
+            guarantor_name : 'asdasd'
+        });
+    }
+
     render() {
 
         let { loading, encodedData } = this.state;
@@ -156,7 +167,7 @@ export default class MainScreen extends Component {
                     </View>    
                         <Button
                             title="Pick an image from camera roll"
-                            onPress={this._pickImage}
+                            onPress={this._test}
                         />
                 </View>
             );

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Text, View, TouchableOpacity,StyleSheet, Image, Button } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Text, View, TouchableOpacity,StyleSheet, Image, Button, SafeAreaView } from 'react-native';
+import { Camera, Permissions, MediaLibrary } from 'expo';
 import { Spinner } from 'native-base';
 
 
@@ -17,12 +17,13 @@ export default class CameraExample extends React.Component {
             encodedData: null,
             hasCameraPermission: null,
             type: Camera.Constants.Type.back,
-            img: ''
+            img: '',
         }
     }
 
     async componentDidMount() {
         const { status } = await Permissions.askAsync(Permissions.CAMERA);
+        await Permissions.askAsync(Permissions.CAMERA_ROLL);
         this.setState({ hasCameraPermission: status === 'granted' });
     }
 
@@ -32,14 +33,27 @@ export default class CameraExample extends React.Component {
             this.setState({
                 loading: true,
                 img: data.uri
+            }, async () => {
+                console.log("asdasdasd")
+                const asset = await MediaLibrary.createAssetAsync(data.uri);
+                console.log('asset', asset);
+                /*MediaLibrary.createAlbumAsync('Expo', asset)
+                .then(() => {
+                    //Alert.alert('Album created!')
+                })
+                .catch(error => {
+                    //Alert.alert('An Error Occurred!')
+                });*/
             })
             this._apiCall(data.uri)
           });
-          console.log(photo)
+          console.log(photo);
+        
         }
     };
 
     async _apiCall(uri){
+        const { navigate } = this.props.navigation;
         let localUri = uri;
             let filename = localUri.split('/').pop();
 
@@ -96,10 +110,13 @@ export default class CameraExample extends React.Component {
         return <Text>No access to camera</Text>;
         } else {
         return (
+            <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
             <View style={{ flex: 1 }}>
             <Camera style={{ flex: 1 }} ref={ref => { this.camera = ref; }} type={this.state.type}
-                autoFocus={ false }
-                skipProcessing = { true }
+                //skipProcessing = { true }
+                autoFocus = {true}
+                ratio = {"16:9"}
+                pictureSize={ "1920x1080" }
             >
                 <View
                 style={{
@@ -112,6 +129,7 @@ export default class CameraExample extends React.Component {
                     //flex: 0.1,
                     alignSelf: 'flex-end',
                     alignItems: 'center',
+                    fontFamily: 'Roboto'
                     }}>
                     <Button
                         title="Capture"
@@ -121,6 +139,7 @@ export default class CameraExample extends React.Component {
                 </View>
             </Camera>
             </View>
+            </SafeAreaView>
         );
         }
     }

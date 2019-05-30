@@ -1,38 +1,28 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Label, Input, Form, Item} from 'native-base';
+import getTheme from '../native-base-theme/components'
+import material from '../native-base-theme/variables/material';
+import { StyleSheet, View } from 'react-native';
+import { StyleProvider, Form, Item, Label, Input } from 'native-base';
 
-class CustomInput extends Component{
 
-    constructor(props){
-        super(props);
-        this.state = {
-            test : ''
-        }
-    }
+type Props = {};
+export default class CustomInput extends Component<Props> {
 
-    render(){
-
-        const { label,value } = this.props;
-
-        return(
-            <Form>
-                <Item floatingLabel>
-                    <Label >{label}</Label>
-                    <Input
-                        value={value}
-                        onChange = {this.props.onValueChange}
-                    />
-                </Item>
-            </Form>
-        )
+    render() {
+        return (
+            <StyleProvider style={getTheme(material)}>
+                <Form style={{width:343}}>
+                    <Item stackedLabel style={{borderColor: '#f5f4f8'}}>
+                        <Label>{this.props.label}</Label>
+                        <Input value={this.props.value}
+                        onChange = {this.props.onValueChange}/>
+                    </Item>
+                </Form>
+            </StyleProvider>)
     }
 }
-
 const styles = StyleSheet.create({
-    label: {
-        color: '#CBCBCB'
-    }
-})
 
-export default CustomInput;
+});
+
+ 
