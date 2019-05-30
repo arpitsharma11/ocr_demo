@@ -1,10 +1,11 @@
-import React from 'react';
+import React,{Component} from 'react';
 import { createAppContainer, createStackNavigator } from 'react-navigation';
+import { SafeAreaView,View } from 'react-native';
 
 import MainScreen from './screens/MainScreen';
 import ResultScreen from './screens/ResultScreen';
 
-const App = createAppContainer(createStackNavigator({
+const Nav = createAppContainer(createStackNavigator({
     Main: MainScreen,
     Result: ResultScreen
   },
@@ -13,4 +14,12 @@ const App = createAppContainer(createStackNavigator({
   }
 ))
 
-export default App;
+export default class App extends Component {
+  render(){
+    return (
+      <View style={{flex: 1,paddingTop: 20}}>
+        <Nav/>
+      </View>
+    )
+  }
+};

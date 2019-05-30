@@ -8,14 +8,19 @@ class ResultScreen extends Component{
 
     static navigationOptions = {
         title: 'Verify',
+        headerTitleStyle: {
+            fontFamily: 'Roboto',
+          }
     }
 
     constructor(props){
         super(props);
         this.state = {
             amount: this.props.navigation.getParam('amount', ''),
-            providerName: this.props.navigation.getParam('provider_name', ''),
-            providerAddress: this.props.navigation.getParam('provider_address', ''),
+            provider_name: this.props.navigation.getParam('provider_name', ''),
+            provider_address: this.props.navigation.getParam('provider_address', ''),
+            guarantor_number:this.props.navigation.getParam('guarantor_number',''),
+            guarantor_name: this.props.navigation.getParam('guarantor_name','')
         }
     }
 
@@ -25,21 +30,33 @@ class ResultScreen extends Component{
         })
     }
 
-    _providerNameChange = (event) => {
+    _provider_nameChange = (event) => {
         this.setState({
-            providerName: event.nativeEvent.text
+            provider_name: event.nativeEvent.text
         })
     }
 
-    _providerAddressChange = (event) => {
+    _provider_addressChange = (event) => {
         this.setState({
-            providerAddress: event.nativeEvent.text
+            provider_address: event.nativeEvent.text
         })
+    }
+
+    _guarantor_numberChange = (event) => {
+      this.setState({
+        guarantor_number: event.nativeEvent.text
+      })
+    }
+
+    _guarantor_nameChange = (event) => {
+      this.setState({
+        guarantor_name: event.nativeEvent.text
+      })
     }
 
     render(){
 
-        const { amount, providerName, providerAddress } = this.state;
+        const { amount, provider_name, provider_address,guarantor_number,guarantor_name } = this.state;
 
         return(
             <View>
@@ -52,12 +69,23 @@ class ResultScreen extends Component{
                 <CustomInput
                     value={provider_name}
                     label="Provider Name"
-                    onValueChange = { this._providerNameChange }
+                    onValueChange = { this._provider_nameChange }
                 />
                 <CustomInput
                     value={provider_address}
                     label="Provider Address"
-                    onValueChange = { this._providerAddressChange }
+                    onValueChange = { this._provider_addressChange }
+                />
+                <Text style={styles.heading}>Guarantor Information</Text>
+                <CustomInput
+                    value={guarantor_number}
+                    label="Guarantor Number"
+                    onValueChange = { this._guarantor_numberChange }
+                />
+                <CustomInput
+                    value={guarantor_name}
+                    label="Guarantor Name"
+                    onValueChange = { this._guarantor_nameChange }
                 />
             </View>
         )

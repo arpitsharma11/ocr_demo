@@ -19,44 +19,62 @@ export default class MainScreen extends Component {
 
     _pickImage = async () => {
         const { navigate } = this.props.navigation;
-        this.setState({
-            loading: true
-        })
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: false,
         //aspect: [4, 3],
         });
 
         console.log("Normal",result.uri);
-        ImageStore.getBase64ForTag(result.uri, (result) => {
-            //console.log(result);
-            /*this.setState({
-                encodedData: result
-            })*/
-        }, (error) => {
-            console.log(error);
-        })
 
         if (!result.cancelled) {
             this.setState({
-                loading: false
+                loading: true,
+                img: result.uri
             })
             console.log("in");
-            await this._apiCall(result);
-            console.log("out")
-            navigate('Result',{
-                amount: '10', 
-                providerName: 'ABC',
-                providerAddress: 'XYZ'
+            let localUri = result.uri;
+            let filename = localUri.split('/').pop();
+
+            // Infer the type of the image
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+
+            // Upload the image using the fetch and FormData APIs
+            let formData = new FormData();
+            // Assume "photo" is the name of the form field the server expects
+            formData.append('photo', { uri: localUri, name: filename, type });
+            console.log('filename',formData);
+            this.setState({
+                loading: true
+            })
+            const res = await fetch('http://172.16.17.131:5000/test', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'content-type': 'multipart/form-data',
+              },
             });
+            const responseJson = await res.json();
+            console.log("response", responseJson);
+
+            console.log("out");
+            this.setState({
+                loading: false
+            })
+            navigate('Result',{
+                amount: responseJson.amount,
+                provider_name: responseJson.provider_name,
+                provider_address: responseJson.provider_address,
+                guarantor_number: responseJson.guarantor_number,
+                guarantor_name: responseJson.guarantor_name
+              });
+
         };
     }
 
     _pickImageCrop = async () => {
         const { navigate } = this.props.navigation;
-        this.setState({
-            loading: true
-        })
+
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [4,5],
@@ -64,6 +82,10 @@ export default class MainScreen extends Component {
 
         if (!result.cancelled) {
             console.log("Normal",result.uri);
+            this.setState({
+
+                loading: true
+            })
             ImageStore.getBase64ForTag(result.uri, (result) => {
                 //console.log(result);
                 /*this.setState({
@@ -71,14 +93,15 @@ export default class MainScreen extends Component {
                 })*/
                 console.log("in");
                 const res = this._apiCall(result);
+
                 this.setState({
                     loading: false
                 })
-                navigate('Result',{
-                    amount: res.amount, 
+                /*navigate('Result',{
+                    amount: res.amount,
                     provider_name: res.provider_name,
                     provider_address: res.provider_address
-                });
+                });*/
             }, (error) => {
                 console.log(error);
             })
@@ -86,13 +109,18 @@ export default class MainScreen extends Component {
     }
 
     _apiCall = async (data) => {
+      let localApi = '172.16.17.131:5000/test'
+      console.log("api call",data);
         try {
-            let response = await fetch('http://172.16.17.131:5000/test',{
+            let response = await fetch(localApi,{
                 method: 'POST',
-                body: "asdad"
+                body: JSON.stringify({ img: data}),
+                headers:{
+                  'Content-Type':'application/json'
+                }
             });
            let responseJson = await response.json();
-            console.log( responseJson);
+           console.log("response", responseJson);
             return responseJson
         } catch (error) {
             console.error(error);
@@ -105,24 +133,20 @@ export default class MainScreen extends Component {
 
         if(loading)
             return(
-                <Spinner color='red' />
+              <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+
+                          <Image style={{width: 150,height: 300}} source={{uri : this.state.img}} />
+                    <Spinner color='red' />
+                    <Text>Image is being processed </Text>
+                </View>
             )
         else
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={styles.botton}>
                         <Button
                             title="Pick an image from camera roll"
                             onPress={this._pickImage}
                         />
-                    </View>
-                    <View style={styles.botton}>
-                        <Button
-                            title="Pick an image from camera roll with crop"
-                            onPress={this._pickImageCrop}
-                            style={styles.botton}
-                        />
-                    </View>
                 </View>
             );
     }
