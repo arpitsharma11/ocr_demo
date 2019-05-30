@@ -4,9 +4,11 @@ import { SafeAreaView,View } from 'react-native';
 
 import MainScreen from './screens/MainScreen';
 import ResultScreen from './screens/ResultScreen';
+import CameraScreen from './screens/CameraScreen';
 
 const Nav = createAppContainer(createStackNavigator({
     Main: MainScreen,
+    Camera: CameraScreen,
     Result: ResultScreen
   },
   {
@@ -17,9 +19,7 @@ const Nav = createAppContainer(createStackNavigator({
 export default class App extends Component {
   render(){
     return (
-      <View style={{flex: 1,paddingTop: 20}}>
         <Nav/>
-      </View>
     )
   }
 };

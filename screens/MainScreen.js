@@ -67,9 +67,14 @@ export default class MainScreen extends Component {
                 provider_address: responseJson.provider_address,
                 guarantor_number: responseJson.guarantor_number,
                 guarantor_name: responseJson.guarantor_name
-              });
+            });
 
         };
+    }
+
+    _openCam = () => {
+        const { navigate } = this.props.navigation;
+        navigate('Camera',{});
     }
 
     _pickImageCrop = async () => {
@@ -143,6 +148,12 @@ export default class MainScreen extends Component {
         else
             return (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={{ paddingBottom: 10 }} >
+                        <Button
+                            title="Open camera"
+                            onPress={this._openCam}
+                        />
+                    </View>    
                         <Button
                             title="Pick an image from camera roll"
                             onPress={this._pickImage}

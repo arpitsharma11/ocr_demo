@@ -10,7 +10,7 @@ class ResultScreen extends Component{
         title: 'Verify',
         headerTitleStyle: {
             fontFamily: 'Roboto',
-          }
+        }
     }
 
     constructor(props){
